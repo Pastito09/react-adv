@@ -2,7 +2,7 @@ import styles from '../styles/styles.module.css';
 
 import { useProduct } from '../hooks/useProduct';
 import { CSSProperties, ReactElement, createContext } from 'react';
-import { Product, ProductContextProps, onChangeArgs } from '../interfaces/interfaces';
+import { InitialValues, Product, ProductCardHandlers, ProductContextProps, onChangeArgs } from '../interfaces/interfaces';
 
 
 
@@ -11,51 +11,42 @@ const { Provider } = ProductContext;
 
 export interface Props {
     product: Product;
-    children?: ReactElement | ReactElement[];
+    //children?: ReactElement | ReactElement[];
+    children: (args: ProductCardHandlers ) => JSX.Element;
     className?: string;
     style?: CSSProperties;
     onChange?: ( args: onChangeArgs ) => void;
     value?: number;
+    initialValues?: InitialValues;
 }
 
 
-export const ProductCard = ({ children, product, className, style, onChange, value }: Props) => {
+export const ProductCard = ({ children, product, className, style, onChange, value, initialValues }: Props) => {
 
-    const { counter, increaseBy } = useProduct({ onChange, product, value });
+    const { counter, increaseBy, maxCount, isMaxCountReached, reset } 
+        = useProduct({ onChange, product, value, initialValues });
     
     return (
         <Provider value={{
             counter,
             increaseBy,
-            product
+            product,
+            maxCount
         }}>
             <div 
                 className={ `${ styles.productCard } ${ className }` }
                 style={ style }
             >
 
-                { children }
-                {/* <img className={ styles.productImg } src="./coffee-mug.png" alt="Coffe mug" />
-                <img className={ styles.productImg } src={ noImage } alt="No Image" />
-                <img className={ styles.productImg } src={ product.img ? product.img : noImage } alt="Coffe mug" />
-                <ProductImage img={ product.img } />
-                {/*<span className={ styles.productDescription }>{ product.title }</span>
-                <ProductTitle title={ product.title } />
-            {/* <div className={ styles.buttonsContainer }>
-                    <button
-                        className={ styles.buttonMinus } 
-                        onClick={() => increaseBy( -1 )}>-</button>
-
-                    <div className={ styles.countLabel }>{counter}</div>
-
-                    <button
-                        className={ styles.buttonAdd }
-                        onClick={() => increaseBy( +1 )}>+</button>
-                </div>
-                <ProductButtons 
-                    increaseBy={ increaseBy }
-                    counter={ counter }}
-            />*/}
+                { children({
+                    count: counter,
+                    isMaxCountReached,
+                    maxCount: initialValues?.maxCount,
+                    product: product,
+                    increaseBy,
+                    reset
+                    }) 
+                }
             </div>
         </Provider>
     
