@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+
 import { ProductButtons, ProductCard, ProductImage, ProductTitle } from '../components';
-import { Product } from '../interfaces/interfaces';
-import '../styles/custom-styles.css';
 import { products } from '../data/products';
 import { useShoppingCart } from '../hooks/useShoppingCart';
+
+import '../styles/custom-styles.css';
+
 
 
 
